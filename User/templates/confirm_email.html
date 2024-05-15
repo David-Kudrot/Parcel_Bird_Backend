@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f8f8;
+            color: #333;
+            padding: 20px;
+            text-align: center;
+        }
+
+        div {
+            background-color: #ffffff;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h3 {
+            color: rgb(52, 73, 94);
+        }
+        .sname{
+            color: rgb(192, 57, 43);
+        }
+
+        p {
+            margin: 10px 0;
+        }
+
+        a {
+            display: inline-block;
+            padding: 15px 30px;
+            background-color: #31e90d;
+            color: #000000;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: background-color 0.3s ease;
+        }
+
+        a:hover {
+            background-color: #16720a;
+            color: white;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <div>
+        <h1>Thanks for creating an account on <span class="sname">PARCEL BIRD</span>!</h1>
+        <p>Click the link below to verify your account:</p>
+
+        <p>
+            <a href="{{ confirm_link }}" target="_blank">Verify Account</a>
+        </p>
+    </div>
+</body>
+
+</html>
