@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from .models import User
+from .models import User, RiderProfile
 
 class UserModelAdmin(BaseUserAdmin):
     list_display = ('id', 'email', 'first_name', 'role', 'profile_image')
@@ -22,3 +22,9 @@ class UserModelAdmin(BaseUserAdmin):
 
 # Register the new UserModelAdmin
 admin.site.register(User, UserModelAdmin)
+
+
+class RiderProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'profile_picture', 'dateOfBirth', 'gender', 'contactNumber', 'NidNumber', 'Nationality', 'vehicleType', 'drivingLicense')
+
+admin.site.register(RiderProfile, RiderProfileAdmin)
