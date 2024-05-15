@@ -74,3 +74,23 @@ class User(AbstractBaseUser, PermissionsMixin):
         return self.role == 'customer'
 # Default profile image function
 
+
+# Rider profile update models=========================
+
+class RiderProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
+    profile_picture = models.ImageField(upload_to='profile_images/', default=default_profile_image, null=True, blank=True)
+    dateOfBirth = models.DateField(null=True, blank=True)
+    gender = models.CharField(max_length=10, null=True, blank=True)
+    contactNumber = models.CharField(max_length=15, null=True, blank=True)
+    NidNumber = models.CharField(max_length=30, null=True, blank=True)
+    Nationality = models.CharField(max_length=30, null=True, blank=True)
+    vehicleType = models.CharField(max_length=20, null=True, blank=True)
+    drivingLicense = models.CharField(max_length=50, null=True, blank=True)
+
+    def __str__(self):
+        return self.user.first_name
+
+
+
+
