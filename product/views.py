@@ -4,13 +4,14 @@ from rest_framework.permissions import IsAuthenticated
 from .models import Product, Category, CartItem
 from .serializers import ProductSerializer, CategorySerializer, CartItemSerializer
 from rest_framework.views import APIView
+from django.http import Http404
 
 
 
 class ProductAPIView(generics.GenericAPIView):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
 
     def get_object(self, pk):
         try:
