@@ -9,8 +9,9 @@ from rest_framework import status
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import User
+from .models import User,RiderProfile
 from . import serializers
+from . serializers import RiderProfileSerializer
 
 class UserRegistrationApiView(APIView):
     serializer_class = serializers.RegistrationSerializer
@@ -74,3 +75,47 @@ class UserLogoutView(APIView):
             return Response({'success': "Logged out successfully"})
         else:
             return Response({'error': "User is not logged in"}, status=status.HTTP_400_BAD_REQUEST)
+        
+# Rider Profile update create get==================
+        
+class RiderProfileUpdate(APIView):
+    def post(self, request, *args, **kwargs):
+        # Get the user from the request
+        user = request.user
+
+        # Check if a RiderProfile instance already exists for the user
+        try:
+            rider_profile = RiderProfile.objects.get(user=user)
+            serializer = RiderProfileSerializer(rider_profile, data=request.data, context={'user': user})
+        except RiderProfile.DoesNotExist:
+            serializer = RiderProfileSerializer(data=request.data, context={'user': user})
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, *args, **kwargs):
+        # Get the user from the request
+        user = request.user
+
+        # Try to retrieve the RiderProfile instance for the user
+        try:
+            rider_profile = RiderProfile.objects.get(user=user)
+            serializer = RiderProfileSerializer(rider_profile)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except RiderProfile.DoesNotExist:
+            return Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+
+    def delete(self, request, *args, **kwargs):
+        # Get the user from the request
+        user = request.user
+
+        # Try to delete the RiderProfile instance for the user
+        try:
+            rider_profile = RiderProfile.objects.get(user=user)
+            rider_profile.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except RiderProfile.DoesNotExist:
+            return Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
