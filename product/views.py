@@ -104,6 +104,23 @@ class CategoryAPIView(APIView):
 
 
 
+
+
+
+
+class CartItemListView(APIView):
+    def get(self, request, format=None):
+        cart_items = CartItem.objects.all()
+        serializer = CartItemSerializer(cart_items, many=True)
+        return Response(serializer.data)
+
+    def post(self, request, format=None):
+        serializer = CartItemSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 class CartItemDetailView(APIView):
     def get_object(self, pk):
         try:
@@ -136,17 +153,3 @@ class CartItemDetailView(APIView):
         cart_item = self.get_object(pk)
         cart_item.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
