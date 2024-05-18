@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Product, Category, CartItem
+from .models import Product, Category, CartItem, CustomerAddress
 
 # Register Product model with admin
 @admin.register(Product)
@@ -20,3 +20,9 @@ class CardItemAdim(admin.ModelAdmin):
     list_display = ['id','user', 'product','quantity']
 
 admin.site.register(CartItem, CardItemAdim)
+
+
+
+class CustomerAddressAdin(admin.ModelAdmin):
+    list_display = ['id', 'user', 'recipient_name']
+admin.site.register(CustomerAddress, CustomerAddressAdin)

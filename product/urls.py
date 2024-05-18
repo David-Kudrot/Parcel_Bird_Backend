@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import ProductAPIView, CategoryAPIView, CartItemListView, CartItemDetailView
+from .views import ProductAPIView, CategoryAPIView, CartItemListView, CartItemDetailView, CustomerAddressCreateAPIView
 
 
 urlpatterns = [
@@ -11,6 +11,7 @@ urlpatterns = [
     # Handles list and create
     path('cart-items/<int:pk>/', CartItemDetailView.as_view(), name='cart-item-detail'), 
     # Handles detail operations
+    path('customeraddresses/create/', CustomerAddressCreateAPIView.as_view(), name='customeraddress-create'),
 ]
 
 

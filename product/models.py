@@ -40,3 +40,23 @@ class CartItem(models.Model):
 
     def __str__(self):
         return self.product.name
+
+
+
+
+
+class CustomerAddress(models.Model):
+    id = models.IntegerField(primary_key=True)
+    delivary_boy = models.CharField(max_length=50 ,null=True, blank=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    recipient_name = models.CharField(max_length=255, null=True, blank=True)
+    street_address = models.CharField(max_length=255, null=True, blank=True)
+    apartment_address = models.CharField(max_length=255, blank=True, null=True)
+    city = models.CharField(max_length=255, null=True, blank=True)
+    state = models.CharField(max_length=255, null=True, blank=True)
+    postal_code = models.CharField(max_length=20, null=True, blank=True)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    county = models.CharField(max_length=40, null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.recipient_name}, {self.street_address}, {self.city}, {self.state}, {self.postal_code}"
