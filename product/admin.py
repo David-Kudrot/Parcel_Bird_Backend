@@ -17,6 +17,6 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class CardItemAdim(admin.ModelAdmin):
-    list_display = ['user', 'product', 'deliverystatus']
+    list_display = ['id','user', 'product','quantity']
 
 admin.site.register(CartItem, CardItemAdim)

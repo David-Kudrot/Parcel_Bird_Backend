@@ -21,6 +21,7 @@ class ProductAPIView(generics.GenericAPIView):
 
     def get(self, request, pk=None):
         # Retrieve a single product instance
+        print("requested user ===================", request.user)
         if pk:
             product = self.get_object(pk)
             serializer = self.serializer_class(product)
@@ -116,7 +117,12 @@ class CartItemListView(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        serializer = CartItemSerializer(data=request.data)
+        print("reqeusted user======",request.user)
+        if request.user:
+            serializer = CartItemSerializer(data=request.data,context={'user': request.user})
+        else:
+            serializer = CartItemSerializer(data=request.data)
+            
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
