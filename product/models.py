@@ -32,7 +32,6 @@ class Product(models.Model):
 
 
 class CartItem(models.Model):
-    id = models.IntegerField(primary_key=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField(null=True, blank=True)
