@@ -117,7 +117,7 @@ class CartItemListView(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
-        # print("reqeusted user======",request.user)
+        print("reqeusted user======",request.user)
         if request.user:
             serializer = CartItemSerializer(data=request.data,context={'user': request.user})
         else:
