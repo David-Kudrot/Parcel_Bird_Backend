@@ -32,7 +32,7 @@ from .models import User
 
 # only role for rider and customer
 from rest_framework import serializers
-from .models import User
+from .models import User, RiderProfile
 
 class RegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(required=True)
@@ -67,3 +67,36 @@ class UserLoginSerializer(serializers.ModelSerializer):
   class Meta:
     model = User
     fields = ['email', 'password']
+
+
+# profile Rider serializers========================
+
+
+class RiderProfileSerializer(serializers.ModelSerializer):
+    GENDER_CHOICES = (
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Other', 'Other'),
+    )
+
+    VEHICLE_CHOICES = (
+        ('Car', 'Car'),
+        ('Bike', 'Bike'),
+        ('Bicycle', 'Bicycle'),
+       
+    )
+
+    gender = serializers.ChoiceField(choices=GENDER_CHOICES)
+    vehicleType = serializers.ChoiceField(choices=VEHICLE_CHOICES)
+
+    class Meta:
+        model = RiderProfile
+        fields = [
+             'dateOfBirth', 'gender', 'profile_picture', 'contactNumber',
+             'NidNumber', 'Nationality', 'vehicleType', 'drivingLicense'
+        ]
+
+    def create(self, validated_data):
+        user = self.context['user'] 
+        validated_data['user'] = user  
+        return super().create(validated_data)
