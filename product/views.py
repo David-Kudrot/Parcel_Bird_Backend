@@ -5,55 +5,39 @@ from .models import Product, Category, CartItem
 from .serializers import ProductSerializer, CategorySerializer, CartItemSerializer, CustomerAddressSerializer
 from rest_framework.views import APIView
 from django.http import Http404
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.parsers import MultiPartParser, FormParser
 
 
 
-class ProductAPIView(generics.GenericAPIView):
+
+
+
+class ProductAPIView(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
-    # permission_classes = [IsAuthenticated]
+    parser_classes = (MultiPartParser, FormParser)
 
-    def get_object(self, pk):
-        try:
-            return self.queryset.get(pk=pk)
-        except Product.DoesNotExist:
-            raise Http404
+    def create(self, request, *args, **kwargs):
+        name = request.data.get("name")
+        image = request.data.get("image")
+        description = request.data.get("description")
+        price = request.data.get("price")
+        categories = request.data.get("categories")
 
-    def get(self, request, pk=None):
-        # Retrieve a single product instance
-        print("requested user ===================", request.user)
-        if pk:
-            product = self.get_object(pk)
-            serializer = self.serializer_class(product)
-            return Response(serializer.data)
-        else:
-            # Retrieve all products
-            products = self.queryset.all()
-            serializer = self.serializer_class(products, many=True)
-            return Response(serializer.data)
+        # Create the Product instance without categories
+        product = Product.objects.create(
+            name=name,
+            image=image,
+            description=description,
+            price=price
+        )
 
-    def post(self, request):
-        # Create a new product
-        serializer = self.serializer_class(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        # Assign the categories
+        if categories:
+            product.categories.set(categories)
 
-    def put(self, request, pk=None):
-        # Update an existing product
-        product = self.get_object(pk)
-        serializer = self.serializer_class(product, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-    def delete(self, request, pk=None):
-        # Delete an existing product
-        product = self.get_object(pk)
-        product.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response("Product Created successfully", status=status.HTTP_200_OK)
 
 
 

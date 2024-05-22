@@ -17,6 +17,7 @@ class UserRegistrationApiView(APIView):
     serializer_class = serializers.RegistrationSerializer
 
     def post(self, request):
+        print("yes here ===============")
         serializer = self.serializer_class(data=request.data)
 
         if serializer.is_valid():
