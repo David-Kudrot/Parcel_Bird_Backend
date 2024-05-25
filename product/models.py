@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 from User.models import User
+from restaurants.models import Restaurant
 
 # Category Model
 class Category(models.Model):
@@ -24,6 +25,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2)
     date = models.DateField(auto_now_add=True)
     categories = models.ManyToManyField(Category, related_name='products')
+    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE, related_name='products')
+    available = models.IntegerField(null=True, blank=True)
 
     def __str__(self):
         return self.name
