@@ -5,13 +5,13 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
-from rest_framework import status
+from rest_framework import status,generics
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import User,RiderProfile
+from .models import User,RiderProfile,Customer_review,Customer_History
 from . import serializers
-from . serializers import RiderProfileSerializer
+from . serializers import RiderProfileSerializer,Customer_Review_Serializer,CustomerHistorySerializer, CustomerHistoryDetailSerializer
 
 class UserRegistrationApiView(APIView):
     serializer_class = serializers.RegistrationSerializer
@@ -119,3 +119,48 @@ class RiderProfileUpdate(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
         except RiderProfile.DoesNotExist:
             return Response({"detail": "Profile not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        
+class CustomerReviewAPIView(APIView):
+    def get(self, request):
+        reviews = Customer_review.objects.all()
+        serializer = Customer_Review_Serializer(reviews, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        serializer = Customer_Review_Serializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def put(self, request, pk):
+        review = self.get_object(pk)
+        serializer = Customer_Review_Serializer(review, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def patch(self, request, pk):
+        review = self.get_object(pk)
+        serializer = Customer_Review_Serializer(review, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk):
+        review = self.get_object(pk)
+        review.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    
+class CustomerHistoryList(generics.ListCreateAPIView):
+    queryset = Customer_History.objects.all()
+    serializer_class = CustomerHistorySerializer
+
+class CustomerHistoryDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Customer_History.objects.all()
+    serializer_class = CustomerHistoryDetailSerializer
+    
