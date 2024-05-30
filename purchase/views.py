@@ -38,29 +38,6 @@ class OrderAPIView(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
-        
-class OrderItemAPIView(generics.GenericAPIView):
-    queryset = OrderItem.objects.all()
-    serializer_class = OrderItemSerializer
-    # permission_classes = [IsAuthenticated]
-
-    def get_object(self, pk):
-        try:
-            return self.queryset.get(pk=pk)
-        except OrderItem.DoesNotExist:
-            raise Http404
-
-    def get(self, request, pk=None):
-        # Retrieve a single product instance
-        if pk:
-            orderitem = self.get_object(pk)
-            serializer = self.serializer_class(orderitem)
-            return Response(serializer.data)
-        else:
-            # Retrieve all products
-            orderitem = self.queryset.all()
-            serializer = self.serializer_class(orderitem, many=True)
-            return Response(serializer.data)
     
         
 

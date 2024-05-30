@@ -32,7 +32,7 @@ from .models import User
 
 # only role for rider and customer
 from rest_framework import serializers
-from .models import User, RiderProfile,Customer_review,Customer_History
+from .models import User, RiderProfile
 
 class RegistrationSerializer(serializers.ModelSerializer):
     confirm_password = serializers.CharField(required=True)
@@ -100,27 +100,3 @@ class RiderProfileSerializer(serializers.ModelSerializer):
         user = self.context['user'] 
         validated_data['user'] = user  
         return super().create(validated_data)
-    
-class Customer_Review_Serializer(serializers.ModelSerializer):
-    
-    class Meta:
-        model=Customer_review
-        fields='__all__'
-        
-        
-class CustomerHistorySerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Customer_History
-        fields = '__all__'
-
-    def to_representation(self, instance):
-        rep = super().to_representation(instance)
-        rep['customer'] = instance.customer.email
-        return rep
-
-class CustomerHistoryDetailSerializer(serializers.ModelSerializer):
-    customer = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    product = serializers.PrimaryKeyRelatedField(queryset=User.objects.all())
-    class Meta:
-        model = Customer_History
-        fields = '__all__'
