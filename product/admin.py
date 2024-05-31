@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import Product, Category, CartItem, CustomerAddress
 
-from .models import Order
+
 
 # Register Product model with admin
 @admin.register(Product)
@@ -30,9 +30,3 @@ class CustomerAddressAdin(admin.ModelAdmin):
 admin.site.register(CustomerAddress, CustomerAddressAdin)
 
 
-
-
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ('user', 'paymentId', 'created', 'ordered')
-
-admin.site.register(Order, OrderAdmin)
