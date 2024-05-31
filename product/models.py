@@ -62,3 +62,15 @@ class CustomerAddress(models.Model):
 
     def __str__(self):
         return f"{self.recipient_name}, {self.street_address}, {self.city}, {self.state}, {self.postal_code}"
+
+
+class Order(models.Model):
+    orderitems = models.ManyToManyField(CartItem)
+    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    paymentId = models.CharField(max_length=260, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
+    ordered = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.user}, order status {self.ordered}'
+    
