@@ -25,6 +25,15 @@ admin.site.register(User, UserModelAdmin)
 
 
 class RiderProfileAdmin(admin.ModelAdmin):
-    list_display = ('user', 'profile_picture', 'dateOfBirth', 'gender', 'contactNumber', 'NidNumber', 'Nationality', 'vehicleType', 'drivingLicense')
+    list_display = ('id','user', 'profile_picture', 'dateOfBirth', 'gender', 'contactNumber', 'NidNumber', 'Nationality', 'vehicleType', 'drivingLicense')
 
 admin.site.register(RiderProfile, RiderProfileAdmin)
+
+
+# @admin.register(Customer_review)
+# class Customer_Review_Admin(admin.ModelAdmin):
+#     list_display=['rider','order','review_message']
+    
+# @admin.register(Customer_History)
+# class Customer_History_Admin(admin.ModelAdmin):
+#     list_display=['customer','delivery_time']
