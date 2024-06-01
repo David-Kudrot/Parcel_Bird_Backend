@@ -19,6 +19,8 @@ class Order(models.Model):
     status=models.CharField(max_length=20,choices=Category, default='just_placed')
     ordered_at = models.DateTimeField(auto_now_add=True)
     delivery_at=models.DateTimeField(null=True,blank=True)
+    ordered = models.BooleanField(default=False)
+    transactionId = models.CharField(max_length=40, null=True, blank=True)
     
     def __str__(self):
         return f'{self.user} {self.products} {self.total_cost} {self.status}'    
