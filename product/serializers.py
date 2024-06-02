@@ -62,3 +62,4 @@ class CustomerAddressSerializer(serializers.ModelSerializer):
 
         # Call the create method of the super class
         return super().create(validated_data)
+
