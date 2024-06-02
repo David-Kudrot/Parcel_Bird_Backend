@@ -6,6 +6,7 @@ from purchase.models import Order
 from purchase.serializers import OrderSerializer
 from product.models import CartItem
 from sslcommerz_lib import SSLCOMMERZ 
+from User.models import User
 
 import string, random
 
@@ -84,7 +85,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         post_body['total_amount'] = total_cost
         post_body['currency'] = "BDT"
         post_body['tran_id'] = tranction
-        post_body['success_url'] = f'http://127.0.0.1:8000/api/payment/paymentSuccessfull/{tranction}/{request.user.id}/'
+        post_body['success_url'] = f'http://127.0.0.1:8000/api/payment/paymentSuccessful/{tranction}/{request.user.id}/'
         post_body['fail_url'] = "http://127.0.0.1:8000/api/cart-item/"
         post_body['cancel_url'] = "http://127.0.0.1:8000/api/cart-item/"
         post_body['emi_option'] = 0
@@ -114,9 +115,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
 
 
-
-
-class paymentSuccessfull(viewsets.ModelViewSet):
+class paymentSuccessful(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
     # permission_classes = [IsAuthenticated]
@@ -124,10 +123,13 @@ class paymentSuccessfull(viewsets.ModelViewSet):
 
     def get_queryset(self):
         user = self.request.user
-        return self.queryset.filter(user=user)
+        return self.queryset.filter(user=user, ordered=False)
 
     def create(self, request, *args, **kwargs):
-        user = request.user
+        pk = self.kwargs['pk']
+        transaction_id = self.kwargs['tran_id']
+    
+        user = User.objects.get(id=pk)
         cart_items = CartItem.objects.filter(user=user, ordered=False)
 
         if not cart_items.exists():
@@ -142,15 +144,16 @@ class paymentSuccessfull(viewsets.ModelViewSet):
             status='just_placed'
         )
 
-        # Associate each cart item with the order
+        # Associate each cart item with the order and mark as ordered
         for cart_item in cart_items:
+            cart_item.ordered = True
+            cart_item.save()
             order.products.add(cart_item)
+
+        order.ordered = True
+        order.transactionId=transaction_id
         order.save()
 
-
-        # Optionally, clear the user's cart after creating the order
-       
-
+        # Serialize the order to send to the frontend
         serializer = self.get_serializer(order)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
- 
