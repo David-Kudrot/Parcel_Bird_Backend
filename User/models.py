@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser, PermissionsMixin
+# from purchase.models import Order
 
 # Custom User Manager
 class UserManager(BaseUserManager):
@@ -92,5 +93,4 @@ class RiderProfile(models.Model):
         return self.user.first_name
 
 
-
-
+    

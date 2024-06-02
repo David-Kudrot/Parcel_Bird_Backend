@@ -35,10 +35,11 @@ class Product(models.Model):
 
 
 class CartItem(models.Model):
-    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey(Product, on_delete=models.PROTECT, null=True, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField(null=True, blank=True)
     date = models.DateTimeField(auto_now_add=True)
+    ordered = models.BooleanField(default=False)
 
     def __str__(self):
         return self.product.name
@@ -62,3 +63,5 @@ class CustomerAddress(models.Model):
 
     def __str__(self):
         return f"{self.recipient_name}, {self.street_address}, {self.city}, {self.state}, {self.postal_code}"
+
+
