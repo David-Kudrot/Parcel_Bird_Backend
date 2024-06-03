@@ -78,6 +78,8 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         tranction = transaction_id()
 
+        print(total_cost, tranction)
+
 
         settings = { 'store_id': 'parce66569259986df', 'store_pass': 'parce66569259986df@ssl', 'issandbox': True }
         sslcz = SSLCOMMERZ(settings)
@@ -104,7 +106,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
 
         response = sslcz.createSession(post_body) # API response
-        # print(response)
+        print(response)
         # Need to redirect user to response['GatewayPageURL']
         if response.get('status') == 'SUCCESS':
             gateway_url = response['GatewayPageURL']
