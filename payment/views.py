@@ -87,9 +87,9 @@ class PaymentViewSet(viewsets.ModelViewSet):
         post_body['total_amount'] = total_cost
         post_body['currency'] = "BDT"
         post_body['tran_id'] = tranction
-        post_body['success_url'] = f'http://127.0.0.1:8000/api/payment/paymentSuccessful/{tranction}/{request.user.id}/'
-        post_body['fail_url'] = "http://127.0.0.1:8000/api/cart-item/"
-        post_body['cancel_url'] = "http://127.0.0.1:8000/api/cart-item/"
+        post_body['success_url'] = f'https://parcel-bird-backend-ykce.onrender.com/api/payment/paymentSuccessful/{tranction}/{request.user.id}/'
+        post_body['fail_url'] = "https://parcel-bird-backend-ykce.onrender.com/api/cart-item/"
+        post_body['cancel_url'] = "https://parcel-bird-backend-ykce.onrender.com/api/cart-item/"
         post_body['emi_option'] = 0
         post_body['cus_name'] = request.user.first_name
         post_body['cus_email'] = request.user.email
