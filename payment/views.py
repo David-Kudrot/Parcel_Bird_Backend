@@ -20,7 +20,6 @@ def transaction_id(size=10, chars=string.ascii_uppercase + string.digits):
 class CheckoutView(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
     http_method_names = ['post', 'get']
 
     def get_queryset(self):
