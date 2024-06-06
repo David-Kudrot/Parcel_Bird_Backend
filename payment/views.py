@@ -20,14 +20,14 @@ def transaction_id(size=10, chars=string.ascii_uppercase + string.digits):
 class CheckoutView(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    http_method_names = ['post', 'get']
-
-    def get_queryset(self):
-        user = self.request.user
-        return self.queryset.filter(user=user)
+    http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
-        user = request.user
+        data = request.data["user"]
+        
+        user = User.objects.get(id=data)
+
+      
         cart_items = CartItem.objects.filter(user=user, ordered=False)
 
         if not cart_items.exists():
@@ -52,6 +52,7 @@ class CheckoutView(viewsets.ModelViewSet):
        
 
         serializer = self.get_serializer(order)
+        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
  
 
@@ -65,7 +66,11 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):   
 
-        user = request.user
+        data = request.data["user"]
+
+        
+        user = User.objects.get(id=data)
+
         cart_items = CartItem.objects.filter(user=user, ordered=False)
 
         print(cart_items, "==========")
@@ -77,7 +82,9 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
         tranction = transaction_id()
 
-        print(total_cost, tranction)
+        print(total_cost, tranction, data, user.id)
+
+        idd = user.id
 
 
         settings = { 'store_id': 'parce66569259986df', 'store_pass': 'parce66569259986df@ssl', 'issandbox': True }
@@ -86,12 +93,12 @@ class PaymentViewSet(viewsets.ModelViewSet):
         post_body['total_amount'] = total_cost
         post_body['currency'] = "BDT"
         post_body['tran_id'] = tranction
-        post_body['success_url'] = f'https://parcel-bird-backend-ykce.onrender.com/api/payment/paymentSuccessful/{tranction}/{request.user.id}/'
+        post_body['success_url'] = f'http://127.0.0.1:8000/api/payment/paymentSuccessful/{tranction}/{idd}/'
         post_body['fail_url'] = "https://parcel-bird-backend-ykce.onrender.com/api/cart-item/"
         post_body['cancel_url'] = "https://parcel-bird-backend-ykce.onrender.com/api/cart-item/"
         post_body['emi_option'] = 0
-        post_body['cus_name'] = request.user.first_name
-        post_body['cus_email'] = request.user.email
+        post_body['cus_name'] = user.first_name
+        post_body['cus_email'] = user.email
         post_body['cus_phone'] = "01700000000"
         post_body['cus_add1'] = "customer address"
         post_body['cus_city'] = "Dhaka"
@@ -105,7 +112,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 
 
         response = sslcz.createSession(post_body) # API response
-        print(response)
+        # print(response)
         # Need to redirect user to response['GatewayPageURL']
         if response.get('status') == 'SUCCESS':
             gateway_url = response['GatewayPageURL']
@@ -119,12 +126,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
 class paymentSuccessful(viewsets.ModelViewSet):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
-    # permission_classes = [IsAuthenticated]
-    http_method_names = ['post', 'get']
-
-    def get_queryset(self):
-        user = self.request.user
-        return self.queryset.filter(user=user, ordered=False)
+    http_method_names = ['post']
 
     def create(self, request, *args, **kwargs):
         pk = self.kwargs['pk']
@@ -132,6 +134,8 @@ class paymentSuccessful(viewsets.ModelViewSet):
     
         user = User.objects.get(id=pk)
         cart_items = CartItem.objects.filter(user=user, ordered=False)
+
+        print(pk, user)
 
         if not cart_items.exists():
             return Response({"detail": "No items in the cart."}, status=status.HTTP_400_BAD_REQUEST)
