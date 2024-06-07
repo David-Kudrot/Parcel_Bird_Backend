@@ -1,0 +1,3 @@
+docker build --tag parcel-bird .  (image create)
+
+docker run --publish 8000:8000 Parcel-Bird  (container run )
